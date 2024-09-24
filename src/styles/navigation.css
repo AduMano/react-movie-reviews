@@ -1,0 +1,26 @@
+nav {
+  position: relative;
+  width: 100%;
+  padding: 16px 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background-color: #333;
+}
+
+nav ul {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 40px;
+}
+
+nav ul a,
+nav h2 {
+  color: white;
+  text-transform: uppercase;
+}
