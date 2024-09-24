@@ -6,7 +6,9 @@ import "./../styles/navigation.css";
 export const Navigation = () => {
   return (
     <nav>
-      <h2>Movie Reviews</h2>
+      <Link to="/">
+        <h2>Movie Reviews</h2>
+      </Link>
 
       <ul>
         <li>

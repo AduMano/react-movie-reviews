@@ -1,12 +1,32 @@
-import React, { useState, useEffect, useCallback, useReducer } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useReducer,
+  useContext,
+} from "react";
 
-// Image
-import image from "./../../public/logo192.png";
+import { Link } from "react-router-dom";
+
+// Context
+import { DataContext } from "../App";
+
+// Components
+import { Image } from "../components/Image";
+
+// Helpers
+import StarConverter from "../helpers/StarConverter";
+
+// CSS
+import "./../styles/home.css";
 
 export const Home = () => {
   // Initiation of Hooks
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
+
+  const { isDarkTheme, toggleTheme, movies, updateMovies } =
+    useContext(DataContext);
 
   // On Load, Change the document's Title
   useEffect(() => {
@@ -40,113 +60,59 @@ export const Home = () => {
       <div className="FilterSection">
         <form onSubmit={filterResult}>
           <input
-            type="text"
+            type="search"
             value={search}
-            placeholder="Search..."
+            placeholder="Search Movie..."
             onChange={updateSearch}
           />
 
           <select onChange={updateCategory} value={category}>
-            <option value="">All</option>
+            <option value="">All Categories</option>
             <option value="Action">Action</option>
             <option value="Comedy">Comedy</option>
             <option value="Sci-Fi">Sci-Fi</option>
             <option value="Horror">Horror</option>
+            <option value="Thriller">Thriller</option>
           </select>
         </form>
       </div>
 
+      <h1 style={{ textAlign: "center" }}>MOVIES</h1>
+
       <div className="MovieSection">
-        <div className="MovieCard">
-          <div className="MovieHeader">
-            <img className="MovieImage" src={image} alt="Movie" />
+        {movies.map(
+          (
+            { isFavorite, id, title, genre, releaseYear, rating, image },
+            index
+          ) => (
+            <div className="MovieCard" key={id}>
+              <Link to={"/detail/" + index}>
+                <div className="MovieHeader">
+                  <Image selector="MovieImage" src={image} title={title} />
 
-            <div className="MovieOverlay">
-              <div className="MovieRate">★★★★☆</div>
-              <h4>2010</h4>
+                  <div className="MovieOverlay">
+                    <div className="MovieRate">
+                      {StarConverter(rating)} - {genre}
+                    </div>
+                    <h4>{releaseYear}</h4>
+                  </div>
+                </div>
+
+                <div className="MovieBody">
+                  <h3>{title}</h3>
+                </div>
+              </Link>
+
+              <div className="MovieFooter">
+                {!isFavorite ? (
+                  <button>Add to Favorite</button>
+                ) : (
+                  <button disabled={true}>Added to Favorites.</button>
+                )}
+              </div>
             </div>
-          </div>
-
-          <div className="MovieBody">
-            <h3>Insterstellar</h3>
-          </div>
-
-          <div className="MovieFooter">
-            <button>Add to Favorite</button>
-          </div>
-        </div>
-        <div className="MovieCard">
-          <div className="MovieHeader">
-            <img className="MovieImage" src={image} alt="Movie" />
-
-            <div className="MovieOverlay">
-              <div className="MovieRate">★★★★☆</div>
-              <h4>2010</h4>
-            </div>
-          </div>
-
-          <div className="MovieBody">
-            <h3>Insterstellar</h3>
-          </div>
-
-          <div className="MovieFooter">
-            <button>Add to Favorite</button>
-          </div>
-        </div>
-        <div className="MovieCard">
-          <div className="MovieHeader">
-            <img className="MovieImage" src={image} alt="Movie" />
-
-            <div className="MovieOverlay">
-              <div className="MovieRate">★★★★☆</div>
-              <h4>2010</h4>
-            </div>
-          </div>
-
-          <div className="MovieBody">
-            <h3>Insterstellar</h3>
-          </div>
-
-          <div className="MovieFooter">
-            <button>Add to Favorite</button>
-          </div>
-        </div>
-        <div className="MovieCard">
-          <div className="MovieHeader">
-            <img className="MovieImage" src={image} alt="Movie" />
-
-            <div className="MovieOverlay">
-              <div className="MovieRate">★★★★☆</div>
-              <h4>2010</h4>
-            </div>
-          </div>
-
-          <div className="MovieBody">
-            <h3>Insterstellar</h3>
-          </div>
-
-          <div className="MovieFooter">
-            <button>Add to Favorite</button>
-          </div>
-        </div>
-        <div className="MovieCard">
-          <div className="MovieHeader">
-            <img className="MovieImage" src={image} alt="Movie" />
-
-            <div className="MovieOverlay">
-              <div className="MovieRate">★★★★☆</div>
-              <h4>2010</h4>
-            </div>
-          </div>
-
-          <div className="MovieBody">
-            <h3>Insterstellar</h3>
-          </div>
-
-          <div className="MovieFooter">
-            <button>Add to Favorite</button>
-          </div>
-        </div>
+          )
+        )}
       </div>
     </div>
   );

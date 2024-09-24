@@ -1,7 +1,160 @@
-.MovieSection {
+.HomeContainer {
   position: relative;
   width: 100%;
   height: 100%;
 
-  overflow: auto;
+  background-color: white;
+}
+
+.HomeContainer:after {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  content: "";
+  z-index: -1;
+
+  background-color: rgba(255, 0, 0, 0.2);
+  clip-path: polygon(
+    60% 42%,
+    73% 16%,
+    100% 17%,
+    100% 100%,
+    0 100%,
+    10% 71%,
+    35% 61%,
+    32% 36%
+  );
+}
+
+.HomeContainer .FilterSection {
+  position: sticky;
+  top: 60px;
+  width: 100%;
+  height: 100%;
+
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.5);
+
+  text-align: center;
+
+  z-index: 4;
+}
+
+.HomeContainer .FilterSection form {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 20px;
+}
+
+.HomeContainer .FilterSection input,
+.FilterSection select {
+  position: relative;
+  padding: 6px 10px;
+  border-radius: 5px;
+}
+
+.HomeContainer .MovieSection {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  padding: 20px;
+
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.HomeContainer .MovieSection .MovieCard {
+  position: relative;
+  margin-bottom: 20px;
+  flex-basis: 250px;
+
+  justify-self: flex-start;
+
+  border-radius: 10px;
+
+  overflow: none;
+}
+
+.HomeContainer .MovieSection .MovieCard:hover {
+  cursor: pointer;
+}
+
+.HomeContainer .MovieSection .MovieCard:hover .MovieImage {
+  transform: scale(1.1);
+  border-radius: 10px;
+  filter: brightness(0.5);
+}
+
+.HomeContainer .MovieSection .MovieCard:hover .MovieHeader .MovieOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+
+  z-index: 1;
+}
+
+.HomeContainer .MovieSection .MovieCard .MovieHeader {
+  position: relative;
+  width: 100%;
+  border-radius: 10px 10px 0 0;
+  height: 250px;
+  overflow: hidden;
+}
+
+.HomeContainer .MovieSection .MovieCard .MovieHeader .MovieImage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  transition: all 0.2s ease;
+}
+
+.HomeContainer .MovieSection .MovieCard .MovieHeader .MovieOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+
+  background-color: rgba(255, 255, 255, 1);
+  transition: all 0.2s ease;
+
+  z-index: 2;
+}
+
+.HomeContainer .MovieSection .MovieCard .MovieFooter {
+  position: relative;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.HomeContainer .MovieSection .MovieCard .MovieFooter button {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 5px 20px;
+
+  transition: all 0.2s ease;
+}
+
+.HomeContainer .MovieSection .MovieCard .MovieFooter button:hover {
+  cursor: pointer;
+  filter: brightness(0.8);
 }

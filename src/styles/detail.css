@@ -1,0 +1,80 @@
+.DetailContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  background-color: white;
+}
+
+.DetailContainer .BackButton {
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 10px 16px;
+  margin: 20px;
+  border-radius: 5px;
+  border: 1px solid black;
+
+  z-index: 3;
+  transition: all 0.2s ease;
+}
+
+.DetailContainer .BackButton:hover {
+  cursor: pointer;
+  filter: brightness(0.8);
+}
+
+.DetailContainer .MovieCard {
+  position: relative;
+  width: 100%;
+  padding: 15px;
+  padding-top: 10%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.DetailContainer .MovieCard .MoviePoster {
+  position: relative;
+  width: 40%;
+}
+.DetailContainer .MovieCard .MovieInfo {
+  position: relative;
+  width: 38%;
+}
+
+.DetailContainer .MovieCard .MoviePoster .MovieImageContainer {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.DetailContainer .MovieCard .MoviePoster .MovieImageContainer .MovieImage {
+  position: relative;
+  width: 50%;
+  height: 50%;
+  object-fit: cover;
+}
+
+.DetailContainer .MovieCard .MovieInfo .MovieStatus {
+  position: relative;
+  margin: 20px 0;
+  z-index: 2;
+
+  text-align: right;
+}
+
+.DetailContainer .MovieCard .MovieInfo .MovieStatus button {
+  position: relative;
+  padding: 12px 20px;
+  margin: 10px;
+}
