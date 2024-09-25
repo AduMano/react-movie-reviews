@@ -1,13 +1,13 @@
 #root {
   position: absolute;
   width: 100%;
-  height: calc(100% - 64px);
+  height: 100%;
 }
 
 .AddContainer {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 64px);
 
   display: flex;
   align-items: center;

@@ -22,10 +22,12 @@ function App() {
     setIsDarkTheme((prev) => !prev);
   };
 
-  const updateMovies = (newMovie) => {
-    setMovies((prev) => {
-      return { ...prev, newMovie };
-    });
+  const updateMovies = (movie) => {
+    const newMovie = [...movies];
+    newMovie.push(movie);
+
+    setMovies(newMovie);
+    return true;
   };
 
   return (

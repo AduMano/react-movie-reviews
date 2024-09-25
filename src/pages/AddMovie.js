@@ -1,26 +1,117 @@
-import React, { useCallback, useEffect, useReducer, useState } from "react";
-import { Link } from "react-router-dom";
+import React, {
+  useCallback,
+  useEffect,
+  useReducer,
+  useState,
+  useContext,
+} from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 // Styles
 import "./../styles/addMovie.css";
 
+// Context
+import { DataContext } from "../App";
+
 // Reducer
 import { initialStates, reducer } from "../reducer/AddMovieReducer";
+
+// Helper
+import {
+  validate_title,
+  validate_description,
+  validate_year,
+} from "../helpers/Validator";
+import { modalContent } from "../components/Modal";
+
+// Components
+import { Modal } from "../components/Modal";
 
 export const AddMovie = () => {
   useEffect(() => {
     document.title = "Add Movie";
   }, []);
 
+  // Navigation
+  const navigate = useNavigate();
+
+  // Context
+  const { isDarkTheme, setToggleTheme, movies, updateMovies } =
+    useContext(DataContext);
+
   // Reducer
   const [state, dispatch] = useReducer(reducer, initialStates);
 
   // State
+  const [modal, setModal] = useState(false);
   const [image, setImage] = useState(state.image);
 
-  const addMovie = useCallback((e) => {
-    e.preventDefault();
-  }, []);
+  // Logic
+  const addMovie = useCallback(
+    (e) => {
+      e.preventDefault();
+
+      // Validate
+      const validate = () => {
+        let title = validate_title(state.title);
+        let description = validate_description(state.description);
+        let year = validate_year(state.year);
+        let movieImage = state.image == "/MovieTemplate.png" ? false : true;
+
+        if (title && description && year && movieImage) {
+          return true;
+        }
+
+        modalContent.title = "Invalid Input";
+        modalContent.message = `${
+          !title ? "Movie Title must be 2 - 20 characters." : ""
+        } ${
+          !description
+            ? "\nMovie Description must be 10 - 1000 characters."
+            : ""
+        } ${!year ? "\nYear must be 4 digits and number only." : ""} ${
+          !movieImage ? "\nPlease attach an image." : ""
+        }`;
+
+        modalContent.options.confirmButton = true;
+        modalContent.options.onConfirm = () => {
+          setModal(false);
+        };
+
+        return false;
+      };
+
+      // If theres something wrong
+      if (!validate()) {
+        // Show Modal
+        setModal(true);
+      } else {
+        let data = {
+          description: state.description,
+          genre: state.category,
+          image: state.image,
+          isFavorite: false,
+          rating: parseInt(state.rating),
+          releaseYear: state.year,
+          title: state.title,
+        };
+
+        if (updateMovies(data)) {
+          modalContent.title = "Successfully Added";
+          modalContent.message = `Movie "${state.title} - ${state.year}" Added.`;
+
+          modalContent.options.confirmButton = true;
+          modalContent.options.onConfirm = () => {
+            setModal(false);
+            navigate("/");
+          };
+
+          setModal(true);
+        }
+      }
+    },
+    [state]
+  );
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -33,6 +124,15 @@ export const AddMovie = () => {
 
   return (
     <div className="AddContainer">
+      {/* Modal */}
+      {modal && (
+        <Modal
+          title={modalContent.title}
+          message={modalContent.message}
+          options={modalContent.options}
+        />
+      )}
+
       <form onSubmit={addMovie}>
         <div className="ImagePicking">
           {/* <Image title={"Mega Mega"} src={state.image} selector={"Drummm"} /> */}
@@ -63,10 +163,23 @@ export const AddMovie = () => {
 
             <div className="FormGroup">
               <label>Description: </label>
-              <textarea onChange={handleInputs} name="description" />
+              <textarea
+                onChange={handleInputs}
+                value={state.description}
+                name="description"
+              />
             </div>
 
             <div className="DropDown">
+              <div className="FormGroup">
+                <label>Year Released: </label>
+                <input
+                  type="number"
+                  value={state.year}
+                  onChange={handleInputs}
+                  name="year"
+                />
+              </div>
               <div className="FormGroup">
                 <label>Category: </label>
                 <select

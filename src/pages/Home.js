@@ -81,11 +81,8 @@ export const Home = () => {
 
       <div className="MovieSection">
         {movies.map(
-          (
-            { isFavorite, id, title, genre, releaseYear, rating, image },
-            index
-          ) => (
-            <div className="MovieCard" key={id}>
+          ({ isFavorite, title, genre, releaseYear, rating, image }, index) => (
+            <div className="MovieCard" key={index}>
               <Link to={"/detail/" + index}>
                 <div className="MovieHeader">
                   <Image selector="MovieImage" src={image} title={title} />

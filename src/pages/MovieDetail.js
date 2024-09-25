@@ -39,6 +39,9 @@ export const MovieDetail = () => {
           <div>
             <h1>{movie.title}</h1>
 
+            <br />
+            <br />
+
             <p>{movie.description}</p>
 
             <div className="MovieStatus">
