@@ -141,13 +141,3 @@
   cursor: pointer;
   filter: brightness(0.8);
 }
-
-.PrimaryButton {
-  background-color: rgb(95, 155, 207);
-  color: white;
-}
-
-.DangerButton {
-  background-color: rgb(209, 86, 86);
-  color: white;
-}

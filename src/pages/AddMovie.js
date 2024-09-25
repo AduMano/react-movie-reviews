@@ -240,7 +240,7 @@ export const AddMovie = () => {
               <button>Cancel</button>
             </Link>
 
-            <input type="submit" value="Add" />
+            <input className="PrimaryButton" type="submit" value="Add" />
           </div>
         </div>
       </form>
