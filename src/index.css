@@ -29,3 +29,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+button:hover {
+  cursor: pointer;
+  filter: brightness(0.8);
+}

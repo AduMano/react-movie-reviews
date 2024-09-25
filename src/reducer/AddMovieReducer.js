@@ -6,6 +6,7 @@ const initialStates = {
   category: "Action",
   rating: "3",
   year: "2024",
+  id: 0,
 };
 
 const reducer = (state, action) => {
@@ -42,6 +43,9 @@ const reducer = (state, action) => {
 
     case "year":
       return { ...state, year: action.value };
+
+    case "id":
+      return { ...state, id: parseInt(action.value) };
 
     default:
       throw new Error(`Unknown action: ${action.type}`);

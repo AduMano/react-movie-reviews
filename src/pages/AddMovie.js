@@ -4,6 +4,7 @@ import React, {
   useReducer,
   useState,
   useContext,
+  useRef,
 } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -28,6 +29,10 @@ import { modalContent } from "../components/Modal";
 import { Modal } from "../components/Modal";
 
 export const AddMovie = () => {
+  // Callback
+  const fileInput = useRef();
+
+  // Effect
   useEffect(() => {
     document.title = "Add Movie";
   }, []);
@@ -36,7 +41,7 @@ export const AddMovie = () => {
   const navigate = useNavigate();
 
   // Context
-  const { isDarkTheme, setToggleTheme, movies, updateMovies } =
+  const { isDarkTheme, setToggleTheme, movies, updateMovies, movieCount } =
     useContext(DataContext);
 
   // Reducer
@@ -94,6 +99,7 @@ export const AddMovie = () => {
           rating: parseInt(state.rating),
           releaseYear: state.year,
           title: state.title,
+          id: movieCount,
         };
 
         if (updateMovies(data)) {
@@ -115,7 +121,22 @@ export const AddMovie = () => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    dispatch({ type: "image_file", value: file, imageState: setImage });
+    const validTypes = ["image/jpeg", "image/jpg", "image/png"];
+
+    if (file && validTypes.includes(file.type)) {
+      dispatch({ type: "image_file", value: file, imageState: setImage });
+    } else {
+      setModal(true);
+
+      modalContent.title = "Invalid Image";
+      modalContent.message = `The Image you selected is invalid.`;
+
+      modalContent.options.confirmButton = true;
+      modalContent.options.onConfirm = () => {
+        fileInput.current.value = "";
+        setModal(false);
+      };
+    }
   };
 
   const handleInputs = (e) => {
@@ -145,6 +166,7 @@ export const AddMovie = () => {
             type="file"
             accept="image/png, image/jpeg, image/jpg"
             onChange={handleFileChange}
+            ref={fileInput}
           />
         </div>
 

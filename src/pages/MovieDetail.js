@@ -8,15 +8,28 @@ import StarConverter from "../helpers/StarConverter";
 import "./../styles/detail.css";
 
 export const MovieDetail = () => {
-  const { isDarkTheme, toggleTheme, movies, updateMovies } =
-    useContext(DataContext);
+  const {
+    isDarkTheme,
+    toggleTheme,
+    updateMovies,
+    movies,
+    resultMovies,
+    updateFavorites,
+  } = useContext(DataContext);
 
   const { id } = useParams();
-  const [movie, setMovie] = useState(movies[id]);
+  const [movie, setMovie] = useState(
+    movies.filter((accuMovie) => accuMovie.id == id)[0]
+  );
 
   useEffect(() => {
-    document.title = movies[id].title + " | Movie";
-  }, []);
+    document.title = movie.title + " | Movie";
+  });
+
+  useEffect(
+    () => setMovie(movies.filter((accuMovie) => accuMovie.id == id)[0]),
+    [movies]
+  );
 
   return (
     <div className="DetailContainer">
@@ -49,9 +62,21 @@ export const MovieDetail = () => {
                 {movie.genre} - {StarConverter(movie.rating)}
               </h3>
               {!movie.isFavorite ? (
-                <button>Add to Favorite</button>
+                <button
+                  onClick={updateFavorites}
+                  className={"PrimaryButton"}
+                  data-id={movie.id}
+                >
+                  Add to Favorite
+                </button>
               ) : (
-                <button disabled={true}>Added to Favorites.</button>
+                <button
+                  onClick={updateFavorites}
+                  className={"DangerButton"}
+                  data-id={id}
+                >
+                  Remove to Favorites
+                </button>
               )}
             </div>
           </div>

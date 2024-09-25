@@ -12,6 +12,7 @@ export const modalContent = {
     onCancel: () => {},
     updateButton: false,
     onUpdate: () => {},
+    yesButton: false,
   },
 };
 
@@ -52,6 +53,14 @@ export const Modal = ({ title, message, options }) => {
               onClick={() => defaultOption.onUpdate()}
             >
               Update
+            </button>
+          )}
+          {defaultOption.yesButton && (
+            <button
+              className="BtnConfirm Confirm"
+              onClick={() => defaultOption.onConfirm()}
+            >
+              Yes
             </button>
           )}
         </div>

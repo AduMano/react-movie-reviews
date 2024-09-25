@@ -57,3 +57,5 @@ export let movieList = [
       "https://m.media-amazon.com/images/M/MV5BZGVjNmViZDUtOTYzNi00ODVjLWFkODgtZTJiM2I1NTRlYTNkXkEyXkFqcGc@._V1_.jpg",
   },
 ];
+
+export let movieCounter = 6;

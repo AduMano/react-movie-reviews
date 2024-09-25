@@ -94,3 +94,13 @@
   padding: 12px 20px;
   margin: 10px;
 }
+
+.PrimaryButton {
+  background-color: rgb(95, 155, 207);
+  color: white;
+}
+
+.DangerButton {
+  background-color: rgb(209, 86, 86);
+  color: white;
+}

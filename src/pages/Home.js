@@ -1,18 +1,9 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useReducer,
-  useContext,
-} from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 
 import { Link } from "react-router-dom";
 
 // Context
 import { DataContext } from "../App";
-
-// Components
-import { Image } from "../components/Image";
 
 // Helpers
 import StarConverter from "../helpers/StarConverter";
@@ -22,11 +13,18 @@ import "./../styles/home.css";
 
 export const Home = () => {
   // Initiation of Hooks
+  const {
+    isDarkTheme,
+    toggleTheme,
+    movies,
+    updateMovies,
+    resultMovies,
+    updateResultMovies,
+    updateFavorites,
+  } = useContext(DataContext);
+
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
-
-  const { isDarkTheme, toggleTheme, movies, updateMovies } =
-    useContext(DataContext);
 
   // On Load, Change the document's Title
   useEffect(() => {
@@ -37,7 +35,8 @@ export const Home = () => {
     // Upon updates on inputs, it waits for .5 seconds before executing the filter
     const timer = setTimeout(() => {
       // Code Here to filter the movies...
-    }, 1500);
+      updateResultMovies(search, category);
+    }, 100);
 
     return () => clearTimeout(timer);
   }, [search, category]);
@@ -67,7 +66,7 @@ export const Home = () => {
           />
 
           <select onChange={updateCategory} value={category}>
-            <option value="">All Categories</option>
+            <option value="All">All Categories</option>
             <option value="Action">Action</option>
             <option value="Comedy">Comedy</option>
             <option value="Sci-Fi">Sci-Fi</option>
@@ -80,12 +79,15 @@ export const Home = () => {
       <h1 style={{ textAlign: "center" }}>MOVIES</h1>
 
       <div className="MovieSection">
-        {movies.map(
-          ({ isFavorite, title, genre, releaseYear, rating, image }, index) => (
+        {resultMovies.map(
+          (
+            { isFavorite, title, id, genre, releaseYear, rating, image },
+            index
+          ) => (
             <div className="MovieCard" key={index}>
-              <Link to={"/detail/" + index}>
+              <Link to={"/detail/" + id}>
                 <div className="MovieHeader">
-                  <Image selector="MovieImage" src={image} title={title} />
+                  <img className="MovieImage" src={image} alt={title} />
 
                   <div className="MovieOverlay">
                     <div className="MovieRate">
@@ -102,9 +104,21 @@ export const Home = () => {
 
               <div className="MovieFooter">
                 {!isFavorite ? (
-                  <button>Add to Favorite</button>
+                  <button
+                    className={"PrimaryButton"}
+                    onClick={updateFavorites}
+                    data-id={id}
+                  >
+                    Add to Favorite
+                  </button>
                 ) : (
-                  <button disabled={true}>Added to Favorites.</button>
+                  <button
+                    className={"DangerButton"}
+                    onClick={updateFavorites}
+                    data-id={id}
+                  >
+                    Remove to Favorites
+                  </button>
                 )}
               </div>
             </div>
