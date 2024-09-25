@@ -36,19 +36,21 @@ export const MovieDetail = () => {
         </div>
 
         <div className="MovieInfo">
-          <h1>{movie.title}</h1>
+          <div>
+            <h1>{movie.title}</h1>
 
-          <p>{movie.description}</p>
+            <p>{movie.description}</p>
 
-          <div className="MovieStatus">
-            <h3>
-              {movie.genre} - {StarConverter(movie.rating)}
-            </h3>
-            {!movie.isFavorite ? (
-              <button>Add to Favorite</button>
-            ) : (
-              <button disabled={true}>Added to Favorites.</button>
-            )}
+            <div className="MovieStatus">
+              <h3>
+                {movie.genre} - {StarConverter(movie.rating)}
+              </h3>
+              {!movie.isFavorite ? (
+                <button>Add to Favorite</button>
+              ) : (
+                <button disabled={true}>Added to Favorites.</button>
+              )}
+            </div>
           </div>
         </div>
       </div>

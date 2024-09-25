@@ -1,0 +1,161 @@
+#root {
+  position: absolute;
+  width: 100%;
+  height: calc(100% - 64px);
+}
+
+.AddContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.AddContainer form {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.AddContainer form .ImagePicking,
+.AddContainer form .Information {
+  position: relative;
+  width: 50%;
+  height: 100%;
+}
+
+.AddContainer form .ImagePicking {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.AddContainer form .ImagePicking .ImageContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.AddContainer form .ImagePicking .ImageContainer .Image {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  filter: brightness(0.6) blur(2px);
+  user-select: none;
+
+  object-fit: cover;
+}
+
+.AddContainer form .ImagePicking input[type="file"] {
+  position: absolute;
+  padding: 10px 16px;
+
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  color: white;
+
+  z-index: 3;
+}
+
+.AddContainer form .Information {
+  background-color: white;
+  box-shadow: 10px 0 100px 100px white;
+  z-index: 3;
+}
+
+.AddContainer form .Information {
+  background-color: white;
+  box-shadow: 10px 0 100px 140px white;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+
+  z-index: 3;
+}
+
+.AddContainer form .Information .MovieCredentials,
+.AddContainer form .Information .ActionButtons {
+  position: relative;
+  padding: 40px;
+  width: 100%;
+}
+
+.AddContainer form .Information .MovieCredentials input,
+.AddContainer form .Information .MovieCredentials textarea {
+  position: relative;
+  padding: 10px 14px;
+  border-radius: 4px;
+  border: 1px solid black;
+  outline: none;
+}
+.AddContainer form .Information textarea {
+  height: 140px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  resize: none;
+}
+.AddContainer form .Information select {
+  position: relative;
+  padding: 6px 14px;
+}
+
+.AddContainer form .Information .MovieCredentials {
+  display: flex;
+  flex-direction: column;
+}
+
+.AddContainer form .Information .MovieCredentials .FormGroup {
+  display: flex;
+  margin-bottom: 20px;
+  flex-direction: column;
+}
+
+.AddContainer form .Information .MovieCredentials .FormGroup label {
+  margin-bottom: 10px;
+}
+
+.AddContainer form .Information .MovieCredentials .DropDown {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.AddContainer form .Information .ActionButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+}
+
+.AddContainer form .Information .ActionButtons button,
+.AddContainer form .Information .ActionButtons input {
+  position: relative;
+  width: 100px;
+  padding: 10px 16px;
+  border-radius: 4px;
+  border: 1px solid black;
+  outline: none;
+
+  transition: all 0.2s ease;
+}
+
+.AddContainer form .Information .ActionButtons button:hover,
+.AddContainer form .Information .ActionButtons input:hover {
+  cursor: pointer;
+  filter: brightness(0.8);
+}
