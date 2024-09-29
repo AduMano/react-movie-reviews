@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/static/css/main.d78faf2f.css",
-    "main.js": "/static/js/main.3488dc62.js",
-    "static/js/756.89485076.chunk.js": "/static/js/756.89485076.chunk.js",
-    "index.html": "/index.html",
-    "main.d78faf2f.css.map": "/static/css/main.d78faf2f.css.map",
-    "main.3488dc62.js.map": "/static/js/main.3488dc62.js.map",
-    "756.89485076.chunk.js.map": "/static/js/756.89485076.chunk.js.map"
+    "main.css": "/react-movie-reviews/static/css/main.d78faf2f.css",
+    "main.js": "/react-movie-reviews/static/js/main.8cee1d54.js",
+    "static/js/756.89485076.chunk.js": "/react-movie-reviews/static/js/756.89485076.chunk.js",
+    "index.html": "/react-movie-reviews/index.html",
+    "main.d78faf2f.css.map": "/react-movie-reviews/static/css/main.d78faf2f.css.map",
+    "main.8cee1d54.js.map": "/react-movie-reviews/static/js/main.8cee1d54.js.map",
+    "756.89485076.chunk.js.map": "/react-movie-reviews/static/js/756.89485076.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.d78faf2f.css",
-    "static/js/main.3488dc62.js"
+    "static/js/main.8cee1d54.js"
   ]
 }
