@@ -6,7 +6,7 @@ import React, {
   useContext,
   useRef,
 } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 // Styles
 import "./../styles/addMovie.css";
@@ -28,21 +28,24 @@ import { modalContent } from "../components/Modal";
 // Components
 import { Modal } from "../components/Modal";
 
-export const AddMovie = () => {
-  // Callback
-  const fileInput = useRef();
-
-  // Effect
-  useEffect(() => {
-    document.title = "Add Movie";
-  }, []);
+export const SetMovie = ({ setType }) => {
+  const { id } = useParams();
 
   // Navigation
   const navigate = useNavigate();
 
   // Context
-  const { isDarkTheme, setToggleTheme, movies, updateMovies, movieCount } =
-    useContext(DataContext);
+  const {
+    isDarkTheme,
+    setToggleTheme,
+    movies,
+    addMovies,
+    movieCount,
+    updateMovies,
+  } = useContext(DataContext);
+
+  // Callback
+  const fileInput = useRef();
 
   // Reducer
   const [state, dispatch] = useReducer(reducer, initialStates);
@@ -51,8 +54,73 @@ export const AddMovie = () => {
   const [modal, setModal] = useState(false);
   const [image, setImage] = useState(state.image);
 
+  // Effect
+  useEffect(() => {
+    document.title = setType == "add" ? "Add Movie" : "Update Movie";
+
+    switch (setType) {
+      case "add":
+        dispatch({ type: "title", value: initialStates.title });
+        dispatch({ type: "description", value: initialStates.description });
+        dispatch({ type: "category", value: initialStates.category });
+        dispatch({ type: "rating", value: initialStates.rating });
+        dispatch({ type: "year", value: initialStates.year });
+        dispatch({ type: "id", value: initialStates.id });
+        setImage("/MovieTemplate.png");
+
+        break;
+      case "update":
+        const data = movies.filter((movie) => movie.id == id)[0];
+
+        dispatch({ type: "title", value: data.title });
+        dispatch({ type: "description", value: data.description });
+        dispatch({ type: "category", value: data.genre });
+        dispatch({ type: "rating", value: data.rating });
+        dispatch({ type: "year", value: data.releaseYear });
+        setImage(data.image);
+
+        break;
+
+      default:
+        navigate("/");
+    }
+  }, [setType]);
+
   // Logic
-  const addMovie = useCallback(
+  const handleFill = useCallback((e) => {
+    const parent = e.target.parentNode;
+    let children = parent.childNodes;
+    let value = 0;
+
+    try {
+      value = parseInt(e.target.getAttribute("data-value"));
+      children.forEach((node, index) => {
+        if (index + 1 <= value) {
+          node.innerText = "★";
+        } else {
+          node.innerText = "☆";
+        }
+      });
+    } catch (error) {
+      return;
+    }
+  });
+
+  const handleDefault = useCallback((e) => {
+    const parent = e.target.parentNode;
+    let children = parent.childNodes;
+    let value = state.rating;
+
+    children.forEach((node, index) => {
+      if (index + 1 <= value) {
+        node.innerText = "★";
+      } else {
+        node.innerText = "☆";
+      }
+    });
+  });
+
+  const setMovie = useCallback(
     (e) => {
       e.preventDefault();
 
@@ -63,7 +131,12 @@ export const AddMovie = () => {
         let year = validate_year(state.year);
         let movieImage = state.image == "/MovieTemplate.png" ? false : true;
 
-        if (title && description && year && movieImage) {
+        if (
+          title &&
+          description &&
+          year &&
+          (movieImage || setType == "update")
+        ) {
           return true;
         }
 
@@ -75,7 +148,7 @@ export const AddMovie = () => {
             ? "\nMovie Description must be 10 - 1000 characters."
             : ""
         } ${!year ? "\nYear must be 4 digits and number only." : ""} ${
-          !movieImage ? "\nPlease attach an image." : ""
+          !movieImage && setType == "add" ? "\nPlease attach an image." : ""
         }`;
 
         modalContent.options.confirmButton = true;
@@ -94,25 +167,50 @@ export const AddMovie = () => {
         let data = {
           description: state.description,
           genre: state.category,
-          image: state.image,
+          image: "",
           isFavorite: false,
           rating: parseInt(state.rating),
           releaseYear: state.year,
           title: state.title,
-          id: movieCount,
+          id: 0,
         };
 
-        if (updateMovies(data)) {
-          modalContent.title = "Successfully Added";
-          modalContent.message = `Movie "${state.title} - ${state.year}" Added.`;
+        switch (setType) {
+          case "add":
+            data.image = state.image;
+            data.id = movieCount;
 
-          modalContent.options.confirmButton = true;
-          modalContent.options.onConfirm = () => {
-            setModal(false);
-            navigate("/");
-          };
+            if (addMovies(data)) {
+              modalContent.title = "Successfully Added";
+              modalContent.message = `Movie "${state.title} - ${state.year}" Added.`;
 
-          setModal(true);
+              modalContent.options.confirmButton = true;
+              modalContent.options.onConfirm = () => {
+                setModal(false);
+                navigate("/");
+              };
+
+              setModal(true);
+            }
+            break;
+          case "update":
+            data.image =
+              state.image == "/MovieTemplate.png" ? image : state.image;
+            data.id = id;
+
+            if (updateMovies(data)) {
+              modalContent.title = "Successfully Updated";
+              modalContent.message = `Movie "${state.title} - ${state.year}" Updated.`;
+
+              modalContent.options.confirmButton = true;
+              modalContent.options.onConfirm = () => {
+                setModal(false);
+                navigate("/");
+              };
+
+              setModal(true);
+            }
+            break;
         }
       }
     },
@@ -140,7 +238,13 @@ export const AddMovie = () => {
   };
 
   const handleInputs = (e) => {
-    dispatch({ type: e.target.getAttribute("name"), value: e.target.value });
+    dispatch({
+      type: e.target.getAttribute("name"),
+      value:
+        e.target.value != null
+          ? e.target.value
+          : e.target.getAttribute("data-value"),
+    });
   };
 
   return (
@@ -154,9 +258,8 @@ export const AddMovie = () => {
         />
       )}
 
-      <form onSubmit={addMovie}>
+      <form onSubmit={setMovie}>
         <div className="ImagePicking">
-          {/* <Image title={"Mega Mega"} src={state.image} selector={"Drummm"} /> */}
           <div className="ImageContainer">
             <img className="Image" src={image} alt={"Mega Man"} />
           </div>
@@ -171,7 +274,7 @@ export const AddMovie = () => {
         </div>
 
         <div className="Information">
-          <h2>Add New Movie</h2>
+          <h2>{setType == "add" ? "Add New" : "Update"} Movie</h2>
           <div className="MovieCredentials">
             <div className="FormGroup">
               <label>Title: </label>
@@ -219,18 +322,29 @@ export const AddMovie = () => {
 
               <div className="FormGroup">
                 <label>Rating: </label>
-                <select
-                  value={state.rating}
-                  onChange={handleInputs}
-                  name="rating"
-                >
-                  <option value="0">☆☆☆☆☆</option>
-                  <option value="1">★☆☆☆☆</option>
-                  <option value="2">★★☆☆☆</option>
-                  <option value="3">★★★☆☆</option>
-                  <option value="4">★★★★☆</option>
-                  <option value="5">★★★★★</option>
-                </select>
+                <div className="ratings">
+                  <i
+                    data-value="1"
+                    name="rating"
+                    onMouseEnter={handleFill}
+                    onMouseLeave={handleDefault}
+                    onClick={handleInputs}
+                  >
+                    ★
+                  </i>
+                  {[...Array(4)].map((elem, index) => (
+                    <i
+                      key={index}
+                      data-value={index + 2}
+                      name="rating"
+                      onMouseEnter={handleFill}
+                      onMouseLeave={handleDefault}
+                      onClick={handleInputs}
+                    >
+                      {index + 2 <= state.rating ? "★" : "☆"}
+                    </i>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -239,8 +353,11 @@ export const AddMovie = () => {
             <Link to="/">
               <button>Cancel</button>
             </Link>
-
-            <input className="PrimaryButton" type="submit" value="Add" />
+            {setType == "add" ? (
+              <input className="PrimaryButton" type="submit" value="Add" />
+            ) : (
+              <input className="UpdateButton" type="submit" value="Update" />
+            )}
           </div>
         </div>
       </form>

@@ -17,7 +17,7 @@
 
 .ModalContainer .Modal {
   position: relative;
-  width: 40%;
+  width: 32%;
   padding: 10px 20px;
 
   display: flex;
@@ -27,6 +27,7 @@
 
   background-color: white;
   border-radius: 6px;
+  box-shadow: 0 0 100px rgba(0, 0, 0, 0.5);
 }
 
 .ModalContainer .Modal * {
@@ -35,6 +36,7 @@
 }
 
 .ModalContainer .Modal p {
+  margin-top: 20px;
   white-space: pre-wrap;
 }
 

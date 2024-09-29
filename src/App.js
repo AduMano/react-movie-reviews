@@ -1,14 +1,14 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // Components
-import { Navigation } from "./components/Navigation";
 import { Modal } from "./components/Modal";
 
 // Pages
 import { Home } from "./pages/Home";
-import { AddMovie } from "./pages/AddMovie";
+import { SetMovie } from "./pages/SetMovie";
 import { MovieDetail } from "./pages/MovieDetail";
+import { Navigation } from "./components/Navigation";
 
 // Data Movies
 import { movieList, movieCounter } from "./data/Movies";
@@ -26,21 +26,45 @@ function App() {
   const [resultMovies, setResultMovies] = useState(movies);
   const [modal, setModal] = useState(false);
 
-  useEffect(() => {
-    setResultMovies(movies);
-  }, [movies]);
-
   const toggleTheme = () => {
     setIsDarkTheme((prev) => !prev);
   };
 
-  const updateMovies = (movie) => {
+  const addMovies = (movie) => {
     const newMovie = [...movies];
     newMovie.push(movie);
 
     setMovies(newMovie);
     setMovieCount((prev) => prev + 1);
 
+    return true;
+  };
+
+  const updateMovies = (selectedMovie) => {
+    setMovies((prev) =>
+      prev.map((movie) => {
+        if (movie.id == selectedMovie.id) {
+          return {
+            ...movie,
+            isFavorite: false,
+            title: selectedMovie.title,
+            genre: selectedMovie.genre,
+            releaseYear: parseInt(selectedMovie.releaseYear),
+            rating: parseInt(selectedMovie.rating),
+            description: selectedMovie.description,
+            image: selectedMovie.image,
+          };
+        } else {
+          return movie;
+        }
+      })
+    );
+
+    return true;
+  };
+
+  const deleteMovie = (movieID) => {
+    setMovies((prev) => prev.filter((movie) => movie.id != movieID));
     return true;
   };
 
@@ -103,10 +127,11 @@ function App() {
                 isDarkTheme,
                 toggleTheme,
                 movies,
-                updateMovies,
+                addMovies,
                 resultMovies,
                 updateResultMovies,
                 updateFavorites,
+                deleteMovie,
               }}
             >
               <Home />
@@ -121,11 +146,12 @@ function App() {
                 isDarkTheme,
                 toggleTheme,
                 movies,
-                updateMovies,
+                addMovies,
                 movieCount,
+                updateMovies,
               }}
             >
-              <AddMovie />
+              <SetMovie setType={"add"} />
             </DataContext.Provider>
           }
         />
@@ -138,12 +164,32 @@ function App() {
                 isDarkTheme,
                 toggleTheme,
                 movies,
-                updateMovies,
+                addMovies,
                 resultMovies,
                 updateFavorites,
+                deleteMovie,
               }}
             >
               <MovieDetail />
+            </DataContext.Provider>
+          }
+        />
+
+        <Route
+          path="/update/:id"
+          element={
+            <DataContext.Provider
+              value={{
+                isDarkTheme,
+                toggleTheme,
+                movies,
+                addMovies,
+                resultMovies,
+                updateFavorites,
+                updateMovies,
+              }}
+            >
+              <SetMovie setType={"update"} />
             </DataContext.Provider>
           }
         />

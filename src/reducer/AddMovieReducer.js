@@ -4,7 +4,7 @@ const initialStates = {
   title: "",
   description: "",
   category: "Action",
-  rating: "3",
+  rating: "1",
   year: "2024",
   id: 0,
 };

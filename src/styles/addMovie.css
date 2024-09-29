@@ -112,7 +112,26 @@
 }
 .AddContainer form .Information select {
   position: relative;
-  padding: 6px 14px;
+  padding: 10px 14px;
+  border-radius: 4px;
+  border: 1px solid black;
+  outline: none;
+}
+.AddContainer form .Information .ratings {
+  position: relative;
+  padding: 5px 0;
+}
+.AddContainer form .Information .ratings * {
+  position: relative;
+  font-size: 1.2rem;
+  padding: 2px;
+  transition: all 0.1s ease;
+}
+
+.AddContainer form .Information .ratings *:hover {
+  transform: scale(1.1);
+  color: rgb(62, 132, 193);
+  cursor: pointer;
 }
 
 .AddContainer form .Information .MovieCredentials {

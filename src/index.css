@@ -40,6 +40,16 @@ button:hover {
   color: white;
 }
 
+.SecondaryButton {
+  background-color: rgb(218, 218, 218);
+  color: black;
+}
+
+.UpdateButton {
+  background-color: rgb(96, 209, 115);
+  color: white;
+}
+
 .DangerButton {
   background-color: rgb(209, 86, 86);
   color: white;
