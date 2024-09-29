@@ -4,7 +4,7 @@ import React, {
   useReducer,
   useState,
   useContext,
-  useRef,
+  useMemo,
 } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
@@ -34,6 +34,7 @@ import { useValidateMovieInputs } from "../customHooks/useValidateMovieInputs";
 import { useSetMovie } from "../customHooks/useSetMovie";
 import { useHandleInput } from "../customHooks/useHandleInput";
 import { RatingSection } from "../components/SetMoviePage/RatingSection";
+import { FormGroup } from "../components/SetMoviePage/FormGroup";
 
 export const SetMovie = ({ setType }) => {
   const { id } = useParams();
@@ -50,6 +51,10 @@ export const SetMovie = ({ setType }) => {
 
   // State
   const [modal, setModal] = useState(false);
+
+  const categoryOption = useMemo(() => {
+    return ["Action", "Comedy", "Sci-Fi", "Horror", "Thriller"];
+  }, []);
 
   // Effect
   useEffect(() => {
@@ -166,49 +171,42 @@ export const SetMovie = ({ setType }) => {
         <div className="Information">
           <h2>{setType == "add" ? "Add New" : "Update"} Movie</h2>
           <div className="MovieCredentials">
-            <div className="FormGroup">
-              <label>Title: </label>
-              <input
-                type="text"
-                value={state.title}
-                onChange={handleInputs}
-                name="title"
-              />
-            </div>
+            <FormGroup
+              type="text"
+              label="Title"
+              value={state.title}
+              onChange={handleInputs}
+              name="title"
+              options={[]}
+            />
 
-            <div className="FormGroup">
-              <label>Description: </label>
-              <textarea
-                onChange={handleInputs}
-                value={state.description}
-                name="description"
-              />
-            </div>
+            <FormGroup
+              type="textarea"
+              label="Description"
+              value={state.description}
+              onChange={handleInputs}
+              name="description"
+              options={[]}
+            />
 
             <div className="DropDown">
-              <div className="FormGroup">
-                <label>Year Released: </label>
-                <input
-                  type="number"
-                  value={state.year}
-                  onChange={handleInputs}
-                  name="year"
-                />
-              </div>
-              <div className="FormGroup">
-                <label>Category: </label>
-                <select
-                  value={state.category}
-                  onChange={handleInputs}
-                  name="category"
-                >
-                  <option value="Action">Action</option>
-                  <option value="Comedy">Comedy</option>
-                  <option value="Sci-Fi">Sci-Fi</option>
-                  <option value="Horror">Horror</option>
-                  <option value="Thriller">Thriller</option>
-                </select>
-              </div>
+              <FormGroup
+                type="number"
+                label="Year Released"
+                value={state.year}
+                onChange={handleInputs}
+                name="year"
+                options={[]}
+              />
+
+              <FormGroup
+                type="category"
+                label="Category"
+                value={state.category}
+                onChange={handleInputs}
+                name="category"
+                options={categoryOption}
+              />
 
               <div className="FormGroup">
                 <label>Rating: </label>
