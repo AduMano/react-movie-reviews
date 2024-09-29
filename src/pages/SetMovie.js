@@ -23,18 +23,17 @@ import {
   validate_description,
   validate_year,
 } from "../helpers/Validator";
-import { modalContent } from "../components/Modal";
-
-// Components
-import { Modal } from "../components/Modal";
 
 // Custom Hooks
 import { useRatingInput } from "../customHooks/useRatingInput";
 import { useValidateMovieInputs } from "../customHooks/useValidateMovieInputs";
 import { useSetMovie } from "../customHooks/useSetMovie";
 import { useHandleInput } from "../customHooks/useHandleInput";
+
+// Components
 import { RatingSection } from "../components/SetMoviePage/RatingSection";
 import { FormGroup } from "../components/SetMoviePage/FormGroup";
+import { modalContent, Modal } from "../components/Modal";
 
 export const SetMovie = ({ setType }) => {
   const { id } = useParams();
