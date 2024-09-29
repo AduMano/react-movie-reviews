@@ -1,5 +1,5 @@
 const validate_title = (string) => {
-  return /^.{2,20}$/.test(string);
+  return /^.{2,50}$/.test(string);
 };
 const validate_description = (string) => {
   return /^.{10,1000}$/.test(string);

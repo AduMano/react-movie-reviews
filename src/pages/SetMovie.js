@@ -28,6 +28,13 @@ import { modalContent } from "../components/Modal";
 // Components
 import { Modal } from "../components/Modal";
 
+// Custom Hooks
+import { useRatingInput } from "../customHooks/useRatingInput";
+import { useValidateMovieInputs } from "../customHooks/useValidateMovieInputs";
+import { useSetMovie } from "../customHooks/useSetMovie";
+import { useHandleInput } from "../customHooks/useHandleInput";
+import { RatingSection } from "../components/SetMoviePage/RatingSection";
+
 export const SetMovie = ({ setType }) => {
   const { id } = useParams();
 
@@ -35,24 +42,14 @@ export const SetMovie = ({ setType }) => {
   const navigate = useNavigate();
 
   // Context
-  const {
-    isDarkTheme,
-    setToggleTheme,
-    movies,
-    addMovies,
-    movieCount,
-    updateMovies,
-  } = useContext(DataContext);
-
-  // Callback
-  const fileInput = useRef();
+  const { movies, addMovies, movieCount, updateMovies } =
+    useContext(DataContext);
 
   // Reducer
   const [state, dispatch] = useReducer(reducer, initialStates);
 
   // State
   const [modal, setModal] = useState(false);
-  const [image, setImage] = useState(state.image);
 
   // Effect
   useEffect(() => {
@@ -87,83 +84,28 @@ export const SetMovie = ({ setType }) => {
   }, [setType]);
 
   // Logic
-  const handleFill = useCallback((e) => {
-    const parent = e.target.parentNode;
-    let children = parent.childNodes;
-    let value = 0;
-
-    try {
-      value = parseInt(e.target.getAttribute("data-value"));
-      children.forEach((node, index) => {
-        if (index + 1 <= value) {
-          node.innerText = "★";
-        } else {
-          node.innerText = "☆";
-        }
-      });
-    } catch (error) {
-      return;
-    }
-  });
-
-  const handleDefault = useCallback((e) => {
-    const parent = e.target.parentNode;
-    let children = parent.childNodes;
-    let value = state.rating;
-
-    children.forEach((node, index) => {
-      if (index + 1 <= value) {
-        node.innerText = "★";
-      } else {
-        node.innerText = "☆";
-      }
-    });
-  });
+  const { handleFill, handleDefault } = useRatingInput(state);
+  const { postMovie } = useSetMovie(addMovies, updateMovies);
+  const { handleFileChange, handleInputs, setImage, fileInput, image } =
+    useHandleInput(dispatch, modalContent, state, setModal);
 
   const setMovie = useCallback(
     (e) => {
       e.preventDefault();
 
       // Validate
-      const validate = () => {
-        let title = validate_title(state.title);
-        let description = validate_description(state.description);
-        let year = validate_year(state.year);
-        let movieImage = state.image == "/MovieTemplate.png" ? false : true;
+      const { validate } = useValidateMovieInputs(
+        validate_title,
+        validate_description,
+        validate_year,
+        setModal,
+        modalContent,
+        state,
+        setType
+      );
 
-        if (
-          title &&
-          description &&
-          year &&
-          (movieImage || setType == "update")
-        ) {
-          return true;
-        }
-
-        modalContent.title = "Invalid Input";
-        modalContent.message = `${
-          !title ? "Movie Title must be 2 - 20 characters." : ""
-        } ${
-          !description
-            ? "\nMovie Description must be 10 - 1000 characters."
-            : ""
-        } ${!year ? "\nYear must be 4 digits and number only." : ""} ${
-          !movieImage && setType == "add" ? "\nPlease attach an image." : ""
-        }`;
-
-        modalContent.options.confirmButton = true;
-        modalContent.options.onConfirm = () => {
-          setModal(false);
-        };
-
-        return false;
-      };
-
-      // If theres something wrong
-      if (!validate()) {
-        // Show Modal
-        setModal(true);
-      } else {
+      // If theres nothing wrong
+      if (validate()) {
         let data = {
           description: state.description,
           genre: state.category,
@@ -175,77 +117,25 @@ export const SetMovie = ({ setType }) => {
           id: 0,
         };
 
-        switch (setType) {
-          case "add":
-            data.image = state.image;
-            data.id = movieCount;
+        postMovie(
+          data,
+          setType,
+          movieCount,
+          state,
+          setModal,
+          modalContent,
+          id,
+          image
+        );
 
-            if (addMovies(data)) {
-              modalContent.title = "Successfully Added";
-              modalContent.message = `Movie "${state.title} - ${state.year}" Added.`;
-
-              modalContent.options.confirmButton = true;
-              modalContent.options.onConfirm = () => {
-                setModal(false);
-                navigate("/");
-              };
-
-              setModal(true);
-            }
-            break;
-          case "update":
-            data.image =
-              state.image == "/MovieTemplate.png" ? image : state.image;
-            data.id = id;
-
-            if (updateMovies(data)) {
-              modalContent.title = "Successfully Updated";
-              modalContent.message = `Movie "${state.title} - ${state.year}" Updated.`;
-
-              modalContent.options.confirmButton = true;
-              modalContent.options.onConfirm = () => {
-                setModal(false);
-                navigate("/");
-              };
-
-              setModal(true);
-            }
-            break;
-        }
+        return;
+      } else {
+        // Show Modal
+        setModal(true);
       }
     },
     [state]
   );
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    const validTypes = ["image/jpeg", "image/jpg", "image/png"];
-
-    if (file && validTypes.includes(file.type)) {
-      dispatch({ type: "image_file", value: file, imageState: setImage });
-    } else {
-      setModal(true);
-
-      modalContent.title = "Invalid Image";
-      modalContent.message = `The Image you selected is invalid.`;
-
-      modalContent.options.confirmButton = true;
-      modalContent.options.onConfirm = () => {
-        fileInput.current.value = "";
-        setModal(false);
-      };
-    }
-  };
-
-  const handleInputs = (e) => {
-    dispatch({
-      type: e.target.getAttribute("name"),
-      value:
-        e.target.value != null
-          ? e.target.value
-          : e.target.getAttribute("data-value"),
-    });
-  };
 
   return (
     <div className="AddContainer">
@@ -322,29 +212,12 @@ export const SetMovie = ({ setType }) => {
 
               <div className="FormGroup">
                 <label>Rating: </label>
-                <div className="ratings">
-                  <i
-                    data-value="1"
-                    name="rating"
-                    onMouseEnter={handleFill}
-                    onMouseLeave={handleDefault}
-                    onClick={handleInputs}
-                  >
-                    ★
-                  </i>
-                  {[...Array(4)].map((elem, index) => (
-                    <i
-                      key={index}
-                      data-value={index + 2}
-                      name="rating"
-                      onMouseEnter={handleFill}
-                      onMouseLeave={handleDefault}
-                      onClick={handleInputs}
-                    >
-                      {index + 2 <= state.rating ? "★" : "☆"}
-                    </i>
-                  ))}
-                </div>
+                <RatingSection
+                  handleFill={handleFill}
+                  handleDefault={handleDefault}
+                  handleInputs={handleInputs}
+                  state={state}
+                />
               </div>
             </div>
           </div>

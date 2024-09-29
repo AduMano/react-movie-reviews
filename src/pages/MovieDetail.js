@@ -1,70 +1,48 @@
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { Image } from "../components/Image";
-import { useEffect, useContext, useState, useCallback } from "react";
+import { useEffect, useContext, useState, useMemo } from "react";
+
+// Context
 import { DataContext } from "../App";
+
+// Helpers
 import StarConverter from "../helpers/StarConverter";
 
+// Components
 import { Modal, modalContent } from "../components/Modal";
 
 // CSS
 import "./../styles/detail.css";
 
-export const MovieDetail = () => {
-  const {
-    isDarkTheme,
-    toggleTheme,
-    addMovies,
-    movies,
-    resultMovies,
-    updateFavorites,
-    deleteMovie,
-  } = useContext(DataContext);
+// Custom Hooks
+import { useConfirmRemoval } from "../customHooks/useConfirmRemoval";
 
+export const MovieDetail = () => {
+  // URL Parameter
   const { id } = useParams();
-  const [movie, setMovie] = useState(
-    movies.filter((accuMovie) => accuMovie.id == id)[0]
-  );
+
+  // Context
+  const { movies, updateFavorites, deleteMovie } = useContext(DataContext);
+
+  // State
   const [modal, setModal] = useState(false);
 
-  const navigate = useNavigate();
+  // Memo
+  const movie = useMemo(() => {
+    return movies.filter((accuMovie) => accuMovie.id == id)[0];
+  }, [movies]);
 
   useEffect(() => {
     document.title = movie.title + " | Movie";
   }, []);
 
-  useEffect(
-    () => setMovie(movies.filter((accuMovie) => accuMovie.id == id)[0]),
-    [movies]
+  // Custom Hook
+  const { removeMovie } = useConfirmRemoval(
+    modalContent,
+    setModal,
+    deleteMovie,
+    true
   );
-
-  const removeMovie = useCallback((e) => {
-    const movieID = parseInt(e.target.getAttribute("data-id"));
-    const message = e.target.getAttribute("data-name");
-
-    modalContent.title = `Delete Movie`;
-    modalContent.message = `Are you sure you want to delete ${message}?`;
-    modalContent.options.cancelButton = true;
-    modalContent.options.confirmButton = true;
-    modalContent.options.onCancel = () => {
-      setModal(false);
-    };
-    modalContent.options.onConfirm = async () => {
-      await setModal(false);
-
-      modalContent.title = `Successfully Deleted`;
-      modalContent.message = `Movie ${message} deleted.`;
-      modalContent.options.cancelButton = false;
-      modalContent.options.confirmButton = true;
-      modalContent.options.onConfirm = () => {
-        deleteMovie(movieID);
-        navigate("/");
-      };
-
-      await setModal(true);
-    };
-
-    setModal(true);
-  });
 
   return (
     <div className="DetailContainer">
