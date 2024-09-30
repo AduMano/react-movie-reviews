@@ -1,15 +1,18 @@
 import { useParams, Link } from "react-router-dom";
-import { Image } from "../components/Image";
-import { useEffect, useContext, useState, useMemo } from "react";
+import { useEffect, useContext, useState } from "react";
 
 // Context
 import { DataContext } from "../App";
 
 // Helpers
 import StarConverter from "../helpers/StarConverter";
+import { DateConverter } from "../helpers/DateConverter";
 
 // Components
 import { Modal, modalContent } from "../components/Modal";
+
+// Fetch
+import { useFetchData } from "../customHooks/useFetchData";
 
 // CSS
 import "./../styles/detail.css";
@@ -22,19 +25,33 @@ export const MovieDetail = () => {
   const { id } = useParams();
 
   // Context
-  const { movies, updateFavorites, deleteMovie } = useContext(DataContext);
+  const { updateFavorites, deleteMovie } = useContext(DataContext);
 
   // State
   const [modal, setModal] = useState(false);
+  const [movie, setMovie] = useState({});
 
-  // Memo
-  const movie = useMemo(() => {
-    return movies.filter((accuMovie) => accuMovie.id == id)[0];
-  }, [movies]);
+  // Fetch
+  const { data, getData } = useFetchData();
 
   useEffect(() => {
     document.title = movie.title + " | Movie";
+
+    const getMovie = async () => {
+      await getData("https://localhost:7294/api/Movies/" + id);
+    };
+
+    getMovie();
   }, []);
+
+  useEffect(() => {
+    if (data == null) {
+      setMovie([]);
+      return;
+    }
+
+    setMovie(data);
+  }, [data]);
 
   // Custom Hook
   const { removeMovie } = useConfirmRemoval(
@@ -61,10 +78,10 @@ export const MovieDetail = () => {
       <div className="MovieCard">
         <div className="MoviePoster">
           <div className="MovieImageContainer">
-            <Image
-              src={movie.image}
-              title={movie.title}
-              selector="MovieImage"
+            <img
+              className={"MovieImage"}
+              src={movie.image_url}
+              alt={movie.title}
             />
           </div>
         </div>
@@ -72,7 +89,7 @@ export const MovieDetail = () => {
         <div className="MovieInfo">
           <div>
             <h1>
-              {movie.title} - {movie.releaseYear}
+              {movie.title} - {DateConverter(movie.releaseYear)}
             </h1>
 
             <br />
@@ -84,7 +101,7 @@ export const MovieDetail = () => {
               <h3>
                 {movie.genre} - {StarConverter(movie.rating)}
               </h3>
-              {!movie.isFavorite ? (
+              {!movie.is_favorite ? (
                 <button
                   onClick={updateFavorites}
                   className={"PrimaryButton"}

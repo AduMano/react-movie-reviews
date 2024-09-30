@@ -1,15 +1,13 @@
 import React, { useState, useEffect, useContext } from "react";
 
-import { Link } from "react-router-dom";
-
 // Context
 import { DataContext } from "../App";
 
-// Helpers
-import StarConverter from "../helpers/StarConverter";
-
 // Components
 import { Modal, modalContent } from "../components/Modal";
+
+// Helpers
+import { DateConverter } from "../helpers/DateConverter";
 
 // CSS
 import "./../styles/home.css";
@@ -31,6 +29,7 @@ export const Home = () => {
     updateResultMovies,
     updateFavorites,
     deleteMovie,
+    loading,
   } = useContext(DataContext);
 
   // Custom Hook
@@ -70,24 +69,28 @@ export const Home = () => {
       <h1 style={{ textAlign: "center" }}>MOVIES</h1>
 
       <div className="MovieSection">
-        {resultMovies.map(
-          (
-            { isFavorite, title, id, genre, releaseYear, rating, image },
-            index
-          ) => (
-            <MovieCard
-              key={index}
-              id={id}
-              index={index}
-              image={image}
-              title={title}
-              genre={genre}
-              rating={rating}
-              releaseYear={releaseYear}
-              isFavorite={isFavorite}
-              updateFavorites={updateFavorites}
-              removeMovie={removeMovie}
-            />
+        {loading ? (
+          <h1>Loading Data...</h1>
+        ) : (
+          resultMovies.map(
+            (
+              { is_favorite, title, id, genre, releaseYear, rating, image_url },
+              index
+            ) => (
+              <MovieCard
+                key={index}
+                id={id}
+                index={index}
+                image={image_url}
+                title={title}
+                genre={genre}
+                rating={rating}
+                releaseYear={DateConverter(releaseYear)}
+                isFavorite={is_favorite}
+                updateFavorites={updateFavorites}
+                removeMovie={removeMovie}
+              />
+            )
           )
         )}
       </div>

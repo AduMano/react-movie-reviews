@@ -24,9 +24,9 @@ export const useValidateMovieInputs = (
       !title ? "Movie Title must be 2 - 20 characters." : ""
     } ${
       !description ? "\nMovie Description must be 10 - 1000 characters." : ""
-    } ${!year ? "\nYear must be 4 digits and number only." : ""} ${
-      !movieImage && setType == "add" ? "\nPlease attach an image." : ""
-    }`;
+    } ${
+      !year ? "\nRelease Date must be only from the past up until today." : ""
+    } ${!movieImage && setType == "add" ? "\nPlease attach an image." : ""}`;
 
     modalContent.options.confirmButton = true;
     modalContent.options.onConfirm = () => {

@@ -1,44 +1,43 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Data Movies
-import { movieList, movieCounter } from "./../data/Movies";
+import { movieCounter } from "./../data/Movies";
+import { useFetchData } from "./useFetchData";
 
 // Movie List data required from data Movies.js
 export const useManipulateMovies = () => {
-  const [movies, setMovies] = useState(movieList);
+  const { data, error, loading, getData, postData, putData, deleteData } =
+    useFetchData();
+  const [movies, setMovies] = useState([]);
   const [movieCount, setMovieCount] = useState(movieCounter);
 
+  useEffect(() => {
+    getData("https://localhost:7294/api/Movies/");
+  }, []);
+
+  useEffect(() => {
+    if (data == null) {
+      setMovies([]);
+      return;
+    }
+
+    setMovies(data);
+  }, [data]);
+
   const addMovies = (movie) => {
-    const newMovie = [...movies];
-    newMovie.push(movie);
+    if (postData("https://localhost:7294/api/Movies/", movie)) {
+      return true;
+    }
 
-    setMovies(newMovie);
-    setMovieCount((prev) => prev + 1);
-
-    return true;
+    return false;
   };
 
-  const updateMovies = (selectedMovie) => {
-    setMovies((prev) =>
-      prev.map((movie) => {
-        if (movie.id == selectedMovie.id) {
-          return {
-            ...movie,
-            isFavorite: false,
-            title: selectedMovie.title,
-            genre: selectedMovie.genre,
-            releaseYear: parseInt(selectedMovie.releaseYear),
-            rating: parseInt(selectedMovie.rating),
-            description: selectedMovie.description,
-            image: selectedMovie.image,
-          };
-        } else {
-          return movie;
-        }
-      })
-    );
+  const updateMovies = (selectedMovie, id) => {
+    if (putData("https://localhost:7294/api/Movies/" + id, selectedMovie)) {
+      return true;
+    }
 
-    return true;
+    return false;
   };
 
   const deleteMovie = (movieID) => {
@@ -53,5 +52,6 @@ export const useManipulateMovies = () => {
     setMovies,
     movies,
     movieCount,
+    loading,
   };
 };

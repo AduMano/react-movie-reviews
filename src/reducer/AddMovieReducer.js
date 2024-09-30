@@ -5,8 +5,8 @@ const initialStates = {
   description: "",
   category: "Action",
   rating: "1",
-  year: "2024",
-  id: 0,
+  year: new Date().toLocaleDateString("en-CA"),
+  id: "",
 };
 
 const reducer = (state, action) => {

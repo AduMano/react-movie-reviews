@@ -29,11 +29,13 @@ import { useRatingInput } from "../customHooks/useRatingInput";
 import { useValidateMovieInputs } from "../customHooks/useValidateMovieInputs";
 import { useSetMovie } from "../customHooks/useSetMovie";
 import { useHandleInput } from "../customHooks/useHandleInput";
+import { useFetchData } from "../customHooks/useFetchData";
 
 // Components
 import { RatingSection } from "../components/SetMoviePage/RatingSection";
 import { FormGroup } from "../components/SetMoviePage/FormGroup";
 import { modalContent, Modal } from "../components/Modal";
+import { DateConverter } from "../helpers/DateConverter";
 
 export const SetMovie = ({ setType }) => {
   const { id } = useParams();
@@ -42,18 +44,21 @@ export const SetMovie = ({ setType }) => {
   const navigate = useNavigate();
 
   // Context
-  const { movies, addMovies, movieCount, updateMovies } =
-    useContext(DataContext);
+  const { addMovies, movieCount, updateMovies } = useContext(DataContext);
 
   // Reducer
   const [state, dispatch] = useReducer(reducer, initialStates);
 
   // State
+  const [movieSelected, setMovieSelected] = useState({});
   const [modal, setModal] = useState(false);
 
   const categoryOption = useMemo(() => {
     return ["Action", "Comedy", "Sci-Fi", "Horror", "Thriller"];
   }, []);
+
+  // Fetch
+  const { data, loading, getData } = useFetchData();
 
   // Effect
   useEffect(() => {
@@ -71,21 +76,38 @@ export const SetMovie = ({ setType }) => {
 
         break;
       case "update":
-        const data = movies.filter((movie) => movie.id == id)[0];
-
-        dispatch({ type: "title", value: data.title });
-        dispatch({ type: "description", value: data.description });
-        dispatch({ type: "category", value: data.genre });
-        dispatch({ type: "rating", value: data.rating });
-        dispatch({ type: "year", value: data.releaseYear });
-        setImage(data.image);
+        dispatch({ type: "title", value: movieSelected.title });
+        dispatch({ type: "description", value: movieSelected.description });
+        dispatch({ type: "category", value: movieSelected.genre });
+        dispatch({ type: "rating", value: movieSelected.rating });
+        dispatch({
+          type: "year",
+          value: movieSelected.releaseYear,
+        });
+        setImage(movieSelected.image_url);
 
         break;
 
       default:
         navigate("/");
     }
-  }, [setType]);
+  }, [setType, movieSelected]);
+
+  useEffect(() => {
+    const getMovie = async () => {
+      await getData("https://localhost:7294/api/Movies/" + id);
+    };
+    getMovie();
+  }, []);
+
+  useEffect(() => {
+    if (data == null) {
+      setMovieSelected([]);
+      return;
+    }
+
+    setMovieSelected(data);
+  }, [data]);
 
   // Logic
   const { handleFill, handleDefault } = useRatingInput(state);
@@ -113,12 +135,11 @@ export const SetMovie = ({ setType }) => {
         let data = {
           description: state.description,
           genre: state.category,
-          image: "",
-          isFavorite: false,
+          image_url: "",
+          is_favorite: false,
           rating: parseInt(state.rating),
           releaseYear: state.year,
           title: state.title,
-          id: 0,
         };
 
         postMovie(
@@ -173,7 +194,7 @@ export const SetMovie = ({ setType }) => {
             <FormGroup
               type="text"
               label="Title"
-              value={state.title}
+              value={state.title || ""}
               onChange={handleInputs}
               name="title"
               options={[]}
@@ -182,7 +203,7 @@ export const SetMovie = ({ setType }) => {
             <FormGroup
               type="textarea"
               label="Description"
-              value={state.description}
+              value={state.description || ""}
               onChange={handleInputs}
               name="description"
               options={[]}
@@ -190,9 +211,9 @@ export const SetMovie = ({ setType }) => {
 
             <div className="DropDown">
               <FormGroup
-                type="number"
-                label="Year Released"
-                value={state.year}
+                type="date"
+                label="Date Released"
+                value={state.year || ""}
                 onChange={handleInputs}
                 name="year"
                 options={[]}
@@ -201,7 +222,7 @@ export const SetMovie = ({ setType }) => {
               <FormGroup
                 type="category"
                 label="Category"
-                value={state.category}
+                value={state.category || ""}
                 onChange={handleInputs}
                 name="category"
                 options={categoryOption}

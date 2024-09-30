@@ -21,8 +21,7 @@ export const useSetMovie = (addMovies, updateMovies) => {
   ) => {
     switch (setType) {
       case "add":
-        data.image = state.image;
-        data.id = movieCount;
+        data.image_url = state.image;
 
         if (addMovies(data)) {
           modalContent.title = "Successfully Added";
@@ -38,10 +37,10 @@ export const useSetMovie = (addMovies, updateMovies) => {
         }
         break;
       case "update":
-        data.image = state.image == "/MovieTemplate.png" ? image : state.image;
-        data.id = id;
+        data.image_url =
+          state.image == "/MovieTemplate.png" ? image : state.image;
 
-        if (updateMovies(data)) {
+        if (updateMovies(data, id)) {
           modalContent.title = "Successfully Updated";
           modalContent.message = `Movie "${state.title} - ${state.year}" Updated.`;
 

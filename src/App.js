@@ -25,6 +25,7 @@ function App() {
     setMovies,
     movies,
     movieCount,
+    loading,
   } = useManipulateMovies();
 
   // Filtering Movies
@@ -51,6 +52,7 @@ function App() {
                 updateResultMovies,
                 updateFavorites,
                 deleteMovie,
+                loading,
               }}
             >
               <Home />
@@ -78,9 +80,9 @@ function App() {
           element={
             <DataContext.Provider
               value={{
-                movies,
                 updateFavorites,
                 deleteMovie,
+                loading,
               }}
             >
               <MovieDetail />
