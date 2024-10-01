@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { DateConverter } from "../helpers/DateConverter";
 
 // addMovies, updateMovies
 
@@ -25,7 +26,9 @@ export const useSetMovie = (addMovies, updateMovies) => {
 
         if (addMovies(data)) {
           modalContent.title = "Successfully Added";
-          modalContent.message = `Movie "${state.title} - ${state.year}" Added.`;
+          modalContent.message = `Movie "${state.title} - ${DateConverter(
+            state.year
+          )}" Added.`;
 
           modalContent.options.confirmButton = true;
           modalContent.options.onConfirm = () => {

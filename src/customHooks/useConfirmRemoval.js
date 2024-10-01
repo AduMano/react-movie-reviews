@@ -10,8 +10,8 @@ export const useConfirmRemoval = (
 ) => {
   const navigate = useNavigate();
 
-  const removeMovie = useCallback((e) => {
-    const movieID = parseInt(e.target.getAttribute("data-id"));
+  const removeMovie = useCallback((e, callbackFunction) => {
+    const movieID = e.target.getAttribute("data-id");
     const message = e.target.getAttribute("data-name");
 
     modalContent.title = `Delete Movie`;
@@ -28,11 +28,15 @@ export const useConfirmRemoval = (
       modalContent.message = `Movie ${message} deleted.`;
       modalContent.options.cancelButton = false;
       modalContent.options.confirmButton = true;
-      modalContent.options.onConfirm = () => {
-        deleteMovie(movieID);
-        setModal(false);
+      modalContent.options.onConfirm = async () => {
+        if (await deleteMovie(movieID)) {
+          setModal(false);
+          callbackFunction();
 
-        redirectToHome ? navigate("/") : false;
+          if (redirectToHome) {
+            navigate("/");
+          }
+        }
       };
 
       await setModal(true);

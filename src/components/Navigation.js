@@ -7,7 +7,7 @@ export const Navigation = () => {
   return (
     <nav>
       <Link to="/">
-        <h2>Movie Reviews</h2>
+        <h2>Movie Sypnosis Hub</h2>
       </Link>
 
       <ul>

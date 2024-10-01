@@ -54,7 +54,23 @@ export const SetMovie = ({ setType }) => {
   const [modal, setModal] = useState(false);
 
   const categoryOption = useMemo(() => {
-    return ["Action", "Comedy", "Sci-Fi", "Horror", "Thriller"];
+    return [
+      "Action",
+      "Comedy",
+      "Sci-Fi",
+      "Horror",
+      "Thriller",
+      "Drama",
+      "Crime",
+      "Romance",
+      "Fantasy",
+      "Biography",
+      "Animation",
+      "War",
+      "Adventure",
+      "History",
+      "Musical",
+    ];
   }, []);
 
   // Fetch

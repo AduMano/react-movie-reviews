@@ -18,24 +18,7 @@ export const DataContext = createContext();
 function App() {
   /// Custom Hooks
   // Movie CRUD
-  const {
-    deleteMovie,
-    updateMovies,
-    addMovies,
-    setMovies,
-    movies,
-    movieCount,
-    loading,
-  } = useManipulateMovies();
-
-  // Filtering Movies
-  const { updateResultMovies, resultMovies } = useFilterMovies(
-    movies,
-    movieCount
-  );
-
-  // Toggle Favorites
-  const { updateFavorites } = useToggleFavorite(setMovies);
+  const { deleteMovie, updateMovies, addMovies } = useManipulateMovies();
 
   return (
     <Router>
@@ -47,12 +30,7 @@ function App() {
           element={
             <DataContext.Provider
               value={{
-                movies,
-                resultMovies,
-                updateResultMovies,
-                updateFavorites,
                 deleteMovie,
-                loading,
               }}
             >
               <Home />
@@ -64,9 +42,7 @@ function App() {
           element={
             <DataContext.Provider
               value={{
-                movies,
                 addMovies,
-                movieCount,
                 updateMovies,
               }}
             >
@@ -80,9 +56,7 @@ function App() {
           element={
             <DataContext.Provider
               value={{
-                updateFavorites,
                 deleteMovie,
-                loading,
               }}
             >
               <MovieDetail />
@@ -95,10 +69,7 @@ function App() {
           element={
             <DataContext.Provider
               value={{
-                movies,
                 addMovies,
-                resultMovies,
-                updateFavorites,
                 updateMovies,
               }}
             >

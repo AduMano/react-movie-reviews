@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { useEffect, useContext, useState } from "react";
+import { useEffect, useContext, useState, useCallback } from "react";
 
 // Context
 import { DataContext } from "../App";
@@ -19,24 +19,25 @@ import "./../styles/detail.css";
 
 // Custom Hooks
 import { useConfirmRemoval } from "../customHooks/useConfirmRemoval";
+import { useToggleFavorite } from "../customHooks/useToggleFavorite";
 
 export const MovieDetail = () => {
   // URL Parameter
   const { id } = useParams();
 
   // Context
-  const { updateFavorites, deleteMovie } = useContext(DataContext);
+  const { deleteMovie } = useContext(DataContext);
 
   // State
   const [modal, setModal] = useState(false);
   const [movie, setMovie] = useState({});
+  const { updateFavorites } = useToggleFavorite();
+  const [isFave, setIsFave] = useState(false);
 
   // Fetch
   const { data, getData } = useFetchData();
 
   useEffect(() => {
-    document.title = movie.title + " | Movie";
-
     const getMovie = async () => {
       await getData("https://localhost:7294/api/Movies/" + id);
     };
@@ -51,6 +52,7 @@ export const MovieDetail = () => {
     }
 
     setMovie(data);
+    document.title = movie.title + " | Movie";
   }, [data]);
 
   // Custom Hook
@@ -60,6 +62,16 @@ export const MovieDetail = () => {
     deleteMovie,
     true
   );
+
+  const updateFave = useCallback((e) => {
+    if (e.target.innerText == "Add to Favorite") {
+      setIsFave(true);
+      updateFavorites(e);
+    } else {
+      setIsFave(false);
+      updateFavorites(e);
+    }
+  });
 
   return (
     <div className="DetailContainer">
@@ -101,17 +113,17 @@ export const MovieDetail = () => {
               <h3>
                 {movie.genre} - {StarConverter(movie.rating)}
               </h3>
-              {!movie.is_favorite ? (
+              {!isFave ? (
                 <button
-                  onClick={updateFavorites}
+                  onClick={updateFave}
                   className={"PrimaryButton"}
-                  data-id={movie.id}
+                  data-id={id}
                 >
                   Add to Favorite
                 </button>
               ) : (
                 <button
-                  onClick={updateFavorites}
+                  onClick={updateFave}
                   className={"SecondaryButton"}
                   data-id={id}
                 >

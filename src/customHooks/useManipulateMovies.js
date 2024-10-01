@@ -1,28 +1,8 @@
-import { useEffect, useState } from "react";
-
-// Data Movies
-import { movieCounter } from "./../data/Movies";
 import { useFetchData } from "./useFetchData";
 
 // Movie List data required from data Movies.js
 export const useManipulateMovies = () => {
-  const { data, error, loading, getData, postData, putData, deleteData } =
-    useFetchData();
-  const [movies, setMovies] = useState([]);
-  const [movieCount, setMovieCount] = useState(movieCounter);
-
-  useEffect(() => {
-    getData("https://localhost:7294/api/Movies/");
-  }, []);
-
-  useEffect(() => {
-    if (data == null) {
-      setMovies([]);
-      return;
-    }
-
-    setMovies(data);
-  }, [data]);
+  const { data, postData, putData, deleteData } = useFetchData();
 
   const addMovies = (movie) => {
     if (postData("https://localhost:7294/api/Movies/", movie)) {
@@ -41,17 +21,16 @@ export const useManipulateMovies = () => {
   };
 
   const deleteMovie = (movieID) => {
-    setMovies((prev) => prev.filter((movie) => movie.id != movieID));
-    return true;
+    if (deleteData("https://localhost:7294/api/Movies/" + movieID)) {
+      return true;
+    }
+
+    return false;
   };
 
   return {
     deleteMovie,
     updateMovies,
     addMovies,
-    setMovies,
-    movies,
-    movieCount,
-    loading,
   };
 };

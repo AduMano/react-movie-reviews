@@ -1,27 +1,23 @@
-// setMovies function definition required from ManipulateMovies hook
-export const useToggleFavorite = (setMovies) => {
-  const updateFavorites = (e) => {
-    let movieID = parseInt(e.target.getAttribute("data-id"));
+import { useFetchData } from "./useFetchData";
+
+export const useToggleFavorite = () => {
+  const { putData } = useFetchData();
+
+  const updateFavorites = async (e) => {
+    let movieID = e.target.getAttribute("data-id");
+    let url = "https://localhost:7294/api/Movies/" + movieID + "/favorite";
 
     switch (e.target.innerText) {
       case "Add to Favorite":
-        setMovies((prevMovies) =>
-          prevMovies.map((movie) =>
-            movie.id === movieID ? { ...movie, isFavorite: true } : movie
-          )
-        );
+        putData(url, { is_favorite: true });
         break;
       case "Remove to Favorites":
-        setMovies((prevMovies) =>
-          prevMovies.map((movie) =>
-            movie.id === movieID ? { ...movie, isFavorite: false } : movie
-          )
-        );
+        putData(url, { is_favorite: false });
         break;
     }
   };
 
   return {
-    updateFavorites,
+    updateFavorites: updateFavorites,
   };
 };

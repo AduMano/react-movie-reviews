@@ -141,3 +141,23 @@
   cursor: pointer;
   filter: brightness(0.8);
 }
+
+.HomeContainer .MoviePagination {
+  position: relative;
+  padding: 0 10px 40px 10px;
+  width: 100%;
+
+  text-align: center;
+}
+
+.HomeContainer .MoviePagination button {
+  position: relative;
+  margin: 0 6px;
+  padding: 6px 10px;
+}
+
+.HomeContainer .MoviePagination button:first-child,
+.HomeContainer .MoviePagination button:last-child {
+  position: relative;
+  margin: 0 20px;
+}
